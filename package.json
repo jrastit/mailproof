@@ -1,0 +1,9 @@
+{
+  "name": "test",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "back"
+  ],
+  "packageManager": "yarn@4.9.1"
+}

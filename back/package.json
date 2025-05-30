@@ -1,0 +1,20 @@
+{
+  "name": "mailproof-back",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsx esbuild.ts",
+    "server": "node --env-file=.env.local build/index.mjs",
+    "start": "yarn build && yarn server"
+  },
+  "dependencies": {
+    "imapflow": "1.0.187"
+  },
+  "devDependencies": {
+    "@types/imapflow": "1.0.22",
+    "esbuild": "0.25.5",
+    "tsx": "4.19.4",
+    "typescript": "5.8.3"
+  }
+}
