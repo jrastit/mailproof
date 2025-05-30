@@ -767,6 +767,7 @@ __metadata:
     "@types/imapflow": "npm:1.0.22"
     esbuild: "npm:0.25.5"
     imapflow: "npm:1.0.187"
+    resolvable-promise: "npm:3.1.0"
     tsx: "npm:4.19.4"
     typescript: "npm:5.8.3"
   languageName: unknown
@@ -1065,6 +1066,13 @@ __metadata:
   version: 0.2.0
   resolution: "real-require@npm:0.2.0"
   checksum: 10c0/23eea5623642f0477412ef8b91acd3969015a1501ed34992ada0e3af521d3c865bb2fe4cdbfec5fe4b505f6d1ef6a03e5c3652520837a8c3b53decff7e74b6a0
+  languageName: node
+  linkType: hard
+
+"resolvable-promise@npm:3.1.0":
+  version: 3.1.0
+  resolution: "resolvable-promise@npm:3.1.0"
+  checksum: 10c0/8225f1dadbb3adc0ef30b23338c95535ff93221322323f4ea11812920177b7047964e48824fddbeab42d338c09fb46744e42db0fa3a9b4e17afa829e29bc3b57
   languageName: node
   linkType: hard
 
