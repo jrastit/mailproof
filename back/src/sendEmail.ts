@@ -16,9 +16,10 @@ export const sendEmailBack = async (sourceEmail: FetchMessageObject, text: strin
     const info = await transporter.sendMail({
         from: sourceEmail.envelope?.to?.[0].address,
         to: sourceEmail.envelope?.from?.[0].address,
-        subject: `Re: ${sourceEmail.envelope?.subject}`,
+        subject: `Re: ${sourceEmail.envelope?.subject ?? ''}`,
         text,
         html,
+        inReplyTo: sourceEmail.envelope?.messageId,
     });
     log('Email sent:', {messageId: info.messageId});
 };
