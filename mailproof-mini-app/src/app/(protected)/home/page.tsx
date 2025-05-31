@@ -29,8 +29,8 @@ export default async function Home() {
         <UserInfo />
         <Verify />
         <Pay />
-        <Transaction />
-        <ViewPermissions />
+        {/* <Transaction />
+        <ViewPermissions /> */}
       </Page.Main>
     </>
   );
