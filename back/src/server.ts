@@ -14,7 +14,7 @@ app.post('/api/worldcoin', async (req, res) => {
 });
 
 app.get('/api/check', async (req, res) => {
-    const result = await processValidationCheck(req.body);
+    const result = await processValidationCheck(req.params as any);
     res.json(result);
 });
 
