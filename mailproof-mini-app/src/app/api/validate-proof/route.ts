@@ -38,10 +38,11 @@ export async function POST(req: NextRequest) {
   )) as IVerifyResponse; // Wrapper on this
 
   if (verifyRes.success) {
+    console.log('Verification successful:', verifyRes);
     const response = await fetch('https://capital-pipefish-close.ngrok-free.app/api/worldcoin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verifyRes, validate_hash, validate_code }),
+      body: JSON.stringify({ verifyRes, proof : {payload, app_id, action, signal}, validate_hash, validate_code }),
     });
 
     if (!response.ok) {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     }
     // This is where you should perform backend actions if the verification succeeds
     // Such as, setting a user as "verified" in a database
-    console.log('Verification successful:', verifyRes);
+    console.log('Backend notified successfully');
     return NextResponse.json({ verifyRes, status: 200 });
   } else {
     // This is where you should handle errors from the World ID /verify endpoint.
