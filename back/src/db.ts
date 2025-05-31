@@ -7,6 +7,7 @@ export type DbEntry = {
     to: string,
     subject: string,
     messageId: string,
+    verifyRes?: string,
     answer?: {
         text: string,
         html: string,

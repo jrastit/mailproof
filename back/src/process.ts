@@ -152,17 +152,28 @@ export const processMail = async (mail: FetchMessageObject) => {
     }
 };
 
-export const processWorldcoinValidation = async ({hash, code}: { hash: string, code: string }) => {
-    const entry = db.get(hash);
-    if (entry && entry.step === 'validating' && entry.code === code) {
+export const processWorldcoinValidation = async (
+    {
+        verifyRes,
+        validate_hash,
+        validate_code,
+    }: {
+        verifyRes: string,
+        validate_hash: string,
+        validate_code: string
+    }
+) => {
+    const entry = db.get(validate_hash);
+    if (entry && entry.step === 'validating' && entry.code === validate_code) {
+        entry.verifyRes = verifyRes;
         const url = 'https://blockscoot.com/..'; // TODO
         await sendEmail(
             entry.to,
             entry.from,
             `Re: ${entry.subject}`,
             entry.messageId,
-            `Email has been validated by sender. See on-chain proof ${url}`,
-            `Email has been validated by sender. See <a href="${url}">on-chain proof</a>`,
+            `Sender has validated email. See on-chain proof ${url}`,
+            `Sender has validated email. See <a href="${url}">on-chain proof</a>`,
         );
         return true;
     } else {
