@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   if (verifyRes.success) {
     console.log('Verification successful:', verifyRes);
-    const response = await fetch('https://capital-pipefish-close.ngrok-free.app/api/worldcoin', {
+    const response = await fetch(`${process.env.MAILPROOF_SERVER}/api/worldcoin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ verifyRes, proof : {payload, app_id, action, signal}, validate_hash, validate_code }),

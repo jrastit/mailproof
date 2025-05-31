@@ -1,15 +1,14 @@
 import { auth } from '@/auth';
 import { Page } from '@/components/PageLayout';
-import { Pay } from '@/components/Pay';
-import { UserInfo } from '@/components/UserInfo';
 import { Marble, TopBar } from '@worldcoin/mini-apps-ui-kit-react';
+import { Check } from '@/components/Check';
 
 type Props = {
-  params: Promise<{ validate_hash: string, validate_code: string }>;
+  params: Promise<{ check_hash: string }>;
 };
 
-export default async function PayPage(props: Props) {
-  const { validate_hash, validate_code } = await props.params;
+export default async function CheckPage(props: Props) {
+  const { check_hash } = await props.params;
   const session = await auth();
   
   return (
@@ -28,7 +27,7 @@ export default async function PayPage(props: Props) {
         />
       </Page.Header>
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
-        C'est peut être un email validé, mais je ne suis pas encore sûr.
+        <Check check_hash={check_hash} />
       </Page.Main>
     </>
   );
