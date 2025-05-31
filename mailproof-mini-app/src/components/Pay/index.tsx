@@ -15,7 +15,7 @@ export const Pay = () => {
 
   const onClickPay = async () => {
     // Lets use Alex's username to pay!
-    const address = (await MiniKit.getUserByUsername('alex')).walletAddress;
+    const address = (await MiniKit.getUserByUsername('jrastit')).walletAddress;
     setButtonState('pending');
 
     const res = await fetch('/api/initiate-payment', {
@@ -23,13 +23,17 @@ export const Pay = () => {
     });
     const { id } = await res.json();
 
+    console.log('Payment reference ID:', id);
+    console.log('Payment address:', address);
+
     const result = await MiniKit.commandsAsync.pay({
       reference: id,
-      to: address ?? '0x0000000000000000000000000000000000000000',
+      // to: address ?? '0xaa875023f631d4686a23312b7b711a04d17e7ffa',
+      to: '0xB724531aD056340bbf611Ac2E68502B26D394179',
       tokens: [
         {
           symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(0.5, Tokens.WLD).toString(),
+          token_amount: tokenToDecimals(0.1, Tokens.WLD).toString(),
         },
         {
           symbol: Tokens.USDCE,
