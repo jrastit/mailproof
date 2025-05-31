@@ -1,5 +1,5 @@
 import {FetchMessageObject} from 'imapflow';
-import {db, DbEntry} from './db';
+import {getDB} from './db';
 import {log} from './log';
 import {simpleParser} from 'mailparser';
 import {OpenAI} from 'openai';
@@ -12,7 +12,26 @@ import {v4 as uuid} from 'uuid';
 import {verify} from 'dkim';
 import {promisify} from 'node:util';
 
-const verifiyDKIM = promisify(verify);
+
+type HashEntry = {
+    step: 'answered' | 'validating',
+    code: string,
+    from: string,
+    to: string,
+    subject: string,
+    messageId: string,
+    verifyProof?: unknown,
+    dkimValid: boolean,
+    answer?: {
+        text: string,
+        html: string,
+        isSpam: boolean,
+    },
+};
+
+const hashDb = getDB<HashEntry>();
+
+const verifyDKIM = promisify(verify);
 
 const model = 'gpt-4.1-mini';
 
@@ -117,15 +136,15 @@ export const processMail = async (mail: FetchMessageObject) => {
     const parsedAttachment = await simpleParser(attachment);
     log('Attachment', {size: attachment.length, attachmentHash});
 
-    if (db.has(attachmentHash)) {
+    const entry = hashDb.get(`hash:${attachmentHash}`);
+    if (entry) {
         log('Answer already exists');
-        const dbData = db.get(attachmentHash) as DbEntry;
-        await sendEmailBack(dbData.answer?.text ?? '', dbData.answer?.html ?? '');
+        await sendEmailBack(entry.answer?.text ?? '', entry.answer?.html ?? '');
     } else {
         const data = await evaluateByChat(attachment.toString());
         if (data.isSpam) {
             log('Mail is a spam');
-            db.set(attachmentHash, {
+            hashDb.set(`hash:${attachmentHash}`, {
                 step: 'answered',
                 code: 'none',
                 dkimValid,
@@ -141,7 +160,7 @@ export const processMail = async (mail: FetchMessageObject) => {
 
             // need to send email to alice
             const code = uuid();
-            db.set(attachmentHash, {
+            hashDb.set(`hash:${attachmentHash}`, {
                 step: 'validating',
                 code,
                 dkimValid,
@@ -174,7 +193,7 @@ export const processWorldcoinValidation = async (
         validate_code: string
     }
 ) => {
-    const entry = db.get(validate_hash);
+    const entry = hashDb.get(`hash:${validate_hash}`);
     if (entry && entry.step === 'validating' && entry.code === validate_code && verifyRes.success) {
         entry.step = 'answered';
         entry.verifyProof = proof;
@@ -194,7 +213,7 @@ export const processWorldcoinValidation = async (
 };
 
 export const processValidationCheck = async ({validate_hash}: { validate_hash: string }) => {
-    const entry = db.get(validate_hash);
+    const entry = hashDb.get(`hash:${validate_hash}`);
     if (entry && entry.step === 'answered') {
         return {
             verified: true,
