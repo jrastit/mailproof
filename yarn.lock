@@ -601,6 +601,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dkim-key@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "dkim-key@npm:1.3.0"
+  checksum: 10c0/23bd3e72d4e6237ec0fb46c1742322095ac18fd196f7f4106a2185be252e71ca262099e3398e69fe39347adff0fc11b4bf61fbbbf435d41a2d9bb8d46750fa5c
+  languageName: node
+  linkType: hard
+
+"dkim-signature@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "dkim-signature@npm:1.3.0"
+  checksum: 10c0/d00e29d18e6b2417451cdd7e4baef33fab471261d30db199e87b79a09f90c12d9fae70ff9b87badc8998caba3a245ce647c96364aa9dee88de34a44fdfdd437a
+  languageName: node
+  linkType: hard
+
+"dkim@npm:0.8.0":
+  version: 0.8.0
+  resolution: "dkim@npm:0.8.0"
+  dependencies:
+    dkim-key: "npm:^1.3.0"
+    dkim-signature: "npm:^1.3.0"
+  checksum: 10c0/db8137a20445b41e254018aebc54ef6c7120d3ff9d7732d1c131988986ea5a92b4badc32f49aee873c248f67655022ceee43153f98ebf82287b94f539bf99a4f
+  languageName: node
+  linkType: hard
+
 "dom-serializer@npm:^2.0.0":
   version: 2.0.0
   resolution: "dom-serializer@npm:2.0.0"
@@ -1318,6 +1342,7 @@ __metadata:
     "@types/mailparser": "npm:3.4.6"
     "@types/nodemailer": "npm:6.4.17"
     body-parser: "npm:2.2.0"
+    dkim: "npm:0.8.0"
     esbuild: "npm:0.25.5"
     express: "npm:5.1.0"
     imapflow: "npm:1.0.187"

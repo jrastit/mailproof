@@ -8,9 +8,11 @@ export type DbEntry = {
     subject: string,
     messageId: string,
     verifyRes?: string,
+    dkimValid: boolean,
     answer?: {
         text: string,
         html: string,
+        isSpam: boolean,
     },
 };
 

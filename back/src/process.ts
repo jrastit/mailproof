@@ -9,6 +9,10 @@ import {createHash} from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import {sendEmail} from './sendEmail';
 import {v4 as uuid} from 'uuid';
+import {verify} from 'dkim';
+import {promisify} from 'node:util';
+
+const verifiyDKIM = promisify(verify);
 
 const model = 'gpt-4.1-mini';
 
@@ -107,6 +111,9 @@ export const processMail = async (mail: FetchMessageObject) => {
     }
 
     const attachmentHash = `0x${hashContent(attachment)}`;
+//    const dkimResults = await verifiyDKIM(attachment);
+//    log('DKIM', {dkimResults});
+    const dkimValid = false;
     const parsedAttachment = await simpleParser(attachment);
     log('Attachment', {size: attachment.length, attachmentHash});
 
@@ -121,6 +128,7 @@ export const processMail = async (mail: FetchMessageObject) => {
             db.set(attachmentHash, {
                 step: 'answered',
                 code: 'none',
+                dkimValid,
                 ...mailMeta,
                 answer: data
             });
@@ -136,6 +144,7 @@ export const processMail = async (mail: FetchMessageObject) => {
             db.set(attachmentHash, {
                 step: 'validating',
                 code,
+                dkimValid,
                 ...mailMeta,
             });
             const path = `/validate/${attachmentHash}/${code}`;
