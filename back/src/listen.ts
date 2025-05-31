@@ -29,7 +29,7 @@ export const listen = async (mailboxNames: string[], processEmail: (message: Fet
             existEventPromise = new ResolvablePromise();
         });
 
-        log('Connection client...', {mailboxName});
+        log('Connecting client...', {mailboxName});
         await client.connect();
 
         log('Opening mailbox...', {mailboxName});
