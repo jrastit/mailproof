@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "imapflow": "1.0.187",
+    "openai": "5.0.1",
     "resolvable-promise": "3.1.0"
   },
   "devDependencies": {
