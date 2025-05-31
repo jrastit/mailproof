@@ -164,17 +164,19 @@ export const processMail = async (mail: FetchMessageObject) => {
 export const processWorldcoinValidation = async (
     {
         verifyRes,
+        proof,
         validate_hash,
         validate_code,
     }: {
-        verifyRes: string,
+        verifyRes: { success: boolean},
+        proof: any,
         validate_hash: string,
         validate_code: string
     }
 ) => {
     const entry = db.get(validate_hash);
-    if (entry && entry.step === 'validating' && entry.code === validate_code) {
-        entry.verifyRes = verifyRes;
+    if (entry && entry.step === 'validating' && entry.code === validate_code && verifyRes.success) {
+        entry.verifyProof = proof;
         const url = 'https://blockscoot.com/..'; // TODO
         await sendEmail(
             entry.to,

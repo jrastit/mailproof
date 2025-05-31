@@ -7,7 +7,7 @@ export type DbEntry = {
     to: string,
     subject: string,
     messageId: string,
-    verifyRes?: string,
+    verifyProof?: unknown,
     dkimValid: boolean,
     answer?: {
         text: string,
