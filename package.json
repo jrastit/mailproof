@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "mailproof",
   "type": "module",
   "private": true,
   "workspaces": [
