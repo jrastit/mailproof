@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "imapflow": "1.0.187",
+    "nodemailer": "7.0.3",
     "openai": "5.0.1",
     "resolvable-promise": "3.1.0"
   },
   "devDependencies": {
     "@types/imapflow": "1.0.22",
+    "@types/nodemailer": "6.4.17",
     "esbuild": "0.25.5",
     "tsx": "4.19.4",
     "typescript": "5.8.3"
