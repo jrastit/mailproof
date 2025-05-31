@@ -14,22 +14,7 @@ export default async function ValidatePage(props: Props) {
   
   return (
     <>
-      <Page.Header className="p-0">
-        <TopBar
-          title="Validate"
-          endAdornment={
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold capitalize">
-                {session?.user.username}
-              </p>
-              <Marble src={session?.user.profilePictureUrl} className="w-12" />
-            </div>
-          }
-        />
-      </Page.Header>
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
-        <p className="text-gray-500 text-sm">Validate hash: {validate_hash}</p>
-        <UserInfo />
         <Validate validate_hash={validate_hash}  validate_code={validate_code}  />
       </Page.Main>
     </>
