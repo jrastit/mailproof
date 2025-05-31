@@ -1,4 +1,5 @@
 import {FetchMessageObject} from 'imapflow';
+import {db} from './db';
 import {log} from './log';
 import {OpenAI} from 'openai';
 import {RunnableToolFunction} from 'openai/lib/RunnableFunction';
@@ -18,6 +19,8 @@ export const processMail = async (
     log('Received message', {
         envelope: mail.envelope,
     });
+
+    db.set(mail.uid, mail.envelope);
 
     const assistantPrompt = await fs.readFile(`prompt/prompt.txt`, 'utf-8');
 
