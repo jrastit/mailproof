@@ -14,7 +14,7 @@ import { getNewNonces } from './server-helpers';
  */
 export const walletAuth = async () => {
   const { nonce, signedNonce } = await getNewNonces();
-
+  console.log('Nonce', nonce);
   const result = await MiniKit.commandsAsync.walletAuth({
     nonce,
     expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -35,11 +35,22 @@ export const walletAuth = async () => {
   } else {
     console.log(result.finalPayload);
   }
-
+  console.log('finalPayload', JSON.stringify(result.finalPayload));
+  console.log('signedNonce', signedNonce);
   await signIn('credentials', {
     redirectTo: '/home',
-    nonce,
-    signedNonce,
-    finalPayloadJson: JSON.stringify(result.finalPayload),
+     // redirect: true, // Must be explicitly set to enable redirect
+     // callbackUrl: '/home', // Not `redirectTo`
+     nonce,
+     signedNonce,
+     finalPayloadJson: JSON.stringify(result.finalPayload),
   });
+  // await signIn('email-passwordless', {
+  //   // redirectTo: '/home',
+  //   redirect: true, // Must be explicitly set to enable redirect
+  //   callbackUrl: '/home', // Not `redirectTo`
+  //   nonce,
+  //   signedNonce,
+  //   finalPayloadJson: JSON.stringify(result.finalPayload),
+  // });
 };
