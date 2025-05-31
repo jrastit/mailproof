@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import {log} from './log';
-import {FetchMessageObject} from "imapflow";
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.ionos.fr',
@@ -12,14 +11,21 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmailBack = async (sourceEmail: FetchMessageObject, text: string, html: string) => {
+export const sendEmail = async (
+    from: string,
+    to: string,
+    subject: string,
+    inReplyTo: string | undefined,
+    text: string,
+    html: string,
+) => {
     const info = await transporter.sendMail({
-        from: sourceEmail.envelope?.to?.[0].address,
-        to: sourceEmail.envelope?.from?.[0].address,
-        subject: `Re: ${sourceEmail.envelope?.subject ?? ''}`,
+        from,
+        to,
+        subject,
+        inReplyTo,
         text,
         html,
-        inReplyTo: sourceEmail.envelope?.messageId,
     });
     log('Email sent:', {messageId: info.messageId});
 };

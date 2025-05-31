@@ -1,7 +1,19 @@
 import * as fs from 'node:fs/promises';
 
+export type DbEntry = {
+    step: 'answered' | 'validating',
+    code: string,
+    from: string,
+    to: string,
+    subject: string,
+    messageId: string,
+    answer?: {
+        text: string,
+        html: string,
+    },
+};
 
-export const db = new Map();
+export const db = new Map<string, DbEntry>();
 const dbFileName = 'db.json';
 const dbTmpFileName = 'db.tmp.json';
 
@@ -24,7 +36,7 @@ const readDb = async () => {
     }
 
     if (await exists(dbFileName)) {
-        const newDb = JSON.parse(await fs.readFile(dbFileName, 'utf8'));
+        const newDb: Record<string, DbEntry> = JSON.parse(await fs.readFile(dbFileName, 'utf8'));
         db.clear();
         Object.entries(newDb).forEach(([key, value]) => {
             db.set(key, value);
@@ -33,7 +45,7 @@ const readDb = async () => {
 };
 
 const saveDb = async () => {
-    await fs.writeFile(dbTmpFileName, JSON.stringify(Object.fromEntries(db.entries())), 'utf8');
+    await fs.writeFile(dbTmpFileName, JSON.stringify(Object.fromEntries(db.entries()), undefined, 2), 'utf8');
     await fs.rm(dbFileName, {force: true});
     await fs.rename(dbTmpFileName, dbFileName);
 };

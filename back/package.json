@@ -15,7 +15,8 @@
     "mailparser": "3.7.3",
     "nodemailer": "7.0.3",
     "openai": "5.0.1",
-    "resolvable-promise": "3.1.0"
+    "resolvable-promise": "3.1.0",
+    "uuid": "11.1.0"
   },
   "devDependencies": {
     "@types/body-parser": "1.19.5",
