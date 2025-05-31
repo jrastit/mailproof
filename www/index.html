@@ -29,21 +29,42 @@
     .hover\:bg-custom-button-cta-hover:hover { background-color: #2F634F; }
   </style>
 </head>
-<body class="min-h-screen bg-custom-bg-page text-gray-800 px-4 sm:px-6 py-10">
+<body class="min-h-screen bg-custom-bg-page text-gray-800 px-4 sm:px-6 py-10" style="padding-top: 120px;">
 
- <header class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center border-b border-gray-400 pb-6 mb-10">
-  <div class="flex items-center gap-3 mb-4 sm:mb-0">
-    <img src="images/Logo_BL_MailProof.png" alt="Mail Proof Logo" class="h-16 sm:h-20" />
+  <header class="fixed top-0 left-0 w-full z-50 bg-custom-bg-page bg-opacity-95 shadow">
+    <div class="max-w-4xl mx-auto flex flex-row justify-between items-center px-4 sm:px-0 pb-3 mb-0">
+      <div class="flex items-center gap-3">
+        <a href="#" aria-label="Remonter en haut de la page">
+          <img src="images/Logo_BL_MailProof.png" alt="Mail Proof Logo" class="h-16 sm:h-20" />
+        </a>
+      </div>
+      <nav class="flex gap-6 items-center">
+        <a href="#features" class="flex text-custom-title hover:text-[#3A7A61] font-medium transition-colors">Analyse Email</a>
+        <a href="#fileshare" class="flex text-custom-title hover:text-[#3A7A61] font-medium transition-colors">Partage Fichier</a>
+        <a href="#certification" class="flex text-custom-title hover:text-[#3A7A61] font-medium transition-colors">Certification</a>
+        <a href="#pricing" class="flex text-custom-title hover:text-[#3A7A61] font-medium transition-colors">Paiement</a>
+        <a href="#contact" class="flex bg-[#3A7A61] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#2e5c48] transition-colors items-center">Try It</a>
+      </nav>
+    </div>
+  </header>
+
+<!-- Carrousel d'images : EN DEHORS DU HEADER -->
+<div class="max-w-4xl mx-auto w-full">
+  <div id="carousel" class="w-full flex justify-center gap-6 mt-2 mb-10 h-48">
+    <img src="images/PaymentRequest_Women.png" alt="Feature 1" class="carousel-img h-48 w-auto opacity-0 transition-opacity duration-700" />
+    <img src="images/Phishing_Men.png" alt="Feature 2" class="carousel-img h-48 w-auto opacity-0 transition-opacity duration-700" />
+    <img src="images/Spoofing_women.png" alt="Feature 3" class="carousel-img h-48 w-auto opacity-0 transition-opacity duration-700" />
+    <img src="images/Scam_Man.png" alt="Feature 4" class="carousel-img h-48 w-auto opacity-0 transition-opacity duration-700" />
   </div>
-</header>
+</div>
 
-<<h1 class="text-2xl sm:text-3xl font-semibold italic text-center my-6">
+<h1 class="text-2xl sm:text-3xl font-semibold italic text-center my-6">
   Kill <span class="text-[#273654]">the phish</span>. <span class="text-[#3A7A61]">Keep the proof.</span>
 </h1>
 
   <main class="max-w-4xl mx-auto">
 
-    <section class="mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <section id="features" class="scroll-mt-32 mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-lg">
       <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
         <span class="ml-2">Received a suspicious email?</span>
@@ -57,10 +78,10 @@
             Forward it to <strong class="text-blue-600">check@mailproof.net</strong>. Our AI agent will analyze:
           </p>
           <ul class="list-disc list-inside mb-4 space-y-1 text-gray-700">
-            <li>Authentication (DKIM/DMARC/SPF)</li>
-            <li>Domain reputation &amp; history</li>
-            <li>Content (links, structure, keywords)</li>
-            <li>Attachments (antivirus scan, signatures)</li>
+            <li class="text-[#3A7A61]">Authentication (DKIM/DMARC/SPF)</li>
+            <li class="text-[#3A7A61]">Domain reputation &amp; history</li>
+            <li class="text-[#3A7A61]">Content (links, structure, keywords)</li>
+            <li class="text-[#3A7A61]">Attachments (antivirus scan, signatures)</li>
           </ul>
           <p class="text-gray-700 font-medium">
             You’ll get a trust report via email <span class="text-green-500">✅</span> <span class="text-yellow-500">⚠️</span> <span class="text-red-500">❌</span>
@@ -68,28 +89,24 @@
         </div>
       </div>
     </section>
-
-    <section class="mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <section class="mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-  <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center">
-    <!-- Picto fichier SVG -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-    </svg>
-    <span class="ml-2">Want to share a file?</span>
-  </h2>
-  <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-    <!-- ...le reste du contenu de la section... -->
+    <section id="fileshare" class="scroll-mt-32 mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-lg">
+      <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center">
+        <!-- Picto fichier SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <span class="ml-2">Want to share a file?</span>
+      </h2>
       <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
         <div class="w-full md:w-1/2">
           <p class="mb-4 text-gray-700">
             Send a file to <strong class="text-blue-600">file@mailproof.net</strong>. You will receive:
           </p>
           <ul class="list-disc list-inside mb-4 space-y-1 text-gray-700">
-            <li>A unique hash of the file</li>
-            <li>A clickable certification link</li>
-            <li>A deposit proof linked to your email</li>
+            <li class="text-[#3A7A61]">A unique hash of the file</li>
+            <li class="text-[#3A7A61]">A clickable certification link</li>
+            <li class="text-[#3A7A61]">A deposit proof linked to your email</li>
           </ul>
         </div>
         <div class="w-full md:w-1/2 flex justify-center">
@@ -97,9 +114,8 @@
         </div>
       </div>
     </section>
-
-   <section class="mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-  <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center justify-center">
+    <section id="certification" class="scroll-mt-32 mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-lg">
+  <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center">
     <!-- Picto agent SVG -->
     <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="8" r="4"/>
@@ -107,15 +123,25 @@
     </svg>
     <span class="ml-2">Proactive certification</span>
   </h2>
-  <div class="flex justify-center mt-4">
-    <img src="images/Certification1.jpg" alt="MailProof Proactive Certification Process" class="rounded-lg shadow-md max-w-md w-full" />
+  <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+    <div class="w-full md:w-1/2 flex justify-center">
+      <img src="images/Certification1.jpg" alt="MailProof Proactive Certification Process" class="rounded-lg shadow-md max-w-xs md:max-w-sm w-full" />
+    </div>
+    <div class="w-full md:w-1/2">
+      <p class="text-gray-700">
+        Certify your emails and files before sending. Get a proactive proof of integrity and timestamp, ready to show in case of dispute or audit.
+      </p>
+    </div>
   </div>
 </section>
-    
-
-    <section class="mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <h2 class="text-2xl font-semibold text-custom-title mb-6">
-        Simple payment model
+    <section id="pricing" class="scroll-mt-32 mb-16 p-6 bg-custom-bg-section rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-lg">
+      <h2 class="text-2xl font-semibold text-custom-title mb-6 flex items-center">
+        <!-- Picto paiement SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <line x1="2" y1="10" x2="22" y2="10" />
+        </svg>
+        <span class="ml-2">Simple payment model</span>
       </h2>
       <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
         <div class="w-full md:w-1/2">
@@ -123,9 +149,9 @@
             On your first send to any <strong class="text-blue-600">@mailproof.net</strong> address, you’ll receive a payment link:
           </p>
           <ul class="list-disc list-inside space-y-1 text-gray-700">
-            <li>Pay-per-use</li>
-            <li>Monthly subscription</li>
-            <li>Crypto or fiat</li>
+            <li class="text-[#3A7A61]">Pay-per-use</li>
+            <li class="text-[#3A7A61]">Monthly subscription</li>
+            <li class="text-[#3A7A61]">Crypto or fiat</li>
           </ul>
           <p class="mt-4 text-gray-700">Once paid, your request is processed automatically.</p>
         </div>
@@ -135,7 +161,7 @@
       </div>
     </section>
 
-    <div class="flex flex-col items-center justify-center my-8">
+    <div id="contact" class="flex flex-col items-center justify-center my-8">
       <div class="flex items-center gap-8">
         <img src="images/MailProof.png" alt="Forward Icon" class="h-64 w-auto" />
         <button class="bg-[#3A7A61] text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-[#2e5c48] transition-colors">
@@ -155,5 +181,26 @@
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
+  <script>
+  // Simple fade-in/fade-out carousel
+  const images = document.querySelectorAll('#carousel .carousel-img');
+  let current = 0;
+  function showImage(idx) {
+    images.forEach((img, i) => {
+      img.style.opacity = (i === idx) ? '1' : '0';
+    });
+  }
+  showImage(current);
+  setInterval(() => {
+    current = (current + 1) % images.length;
+    showImage(current);
+  }, 1500); // Durée réduite pour une animation plus rapide (était 2500)
+</script>
+<script>
+  document.querySelector('a[href="#"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
 </body>
 </html>
