@@ -139,7 +139,7 @@ export const processMail = async (mail: FetchMessageObject) => {
                 ...mailMeta,
             });
             const path = `/validate/${attachmentHash}/${code}`;
-            const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&draft_id=meta_29fe8f71a9596171a59902643c696c39&path=${path}`;
+            const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
             await sendEmail(
                 'validation@mailproof.net',
                 sender,
