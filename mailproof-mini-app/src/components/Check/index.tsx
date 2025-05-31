@@ -29,7 +29,7 @@ export const Check = (props: { check_hash: string }) => {
             const data = await response.json();
             console.log('Check response:', data);
             // Adjust the property path below according to your API response structure
-            const status = data?.proof?.payload?.status;
+            const status = data?.status;
             if (status === 'success') {
                 setCheckState('success');
             } else {
