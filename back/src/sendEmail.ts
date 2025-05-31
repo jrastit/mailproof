@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmailBack = async (sourceEmail: FetchMessageObject, text: string, html: string) => {
     const info = await transporter.sendMail({
-        from: sourceEmail.envelope?.from?.[0].address,
-        to: sourceEmail.envelope?.to?.[0].address,
+        from: sourceEmail.envelope?.to?.[0].address,
+        to: sourceEmail.envelope?.from?.[0].address,
         subject: `Re: ${sourceEmail.envelope?.subject}`,
         text,
         html,
