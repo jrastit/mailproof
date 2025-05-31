@@ -5,7 +5,7 @@ import {RunnableToolFunction} from 'openai/lib/RunnableFunction';
 import {ChatCompletionMessageParam} from 'openai/resources/chat';
 import * as fs from 'node:fs/promises';
 
-const model = 'gpt-4-1106-preview';
+const model = 'gpt-4.1-mini';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
