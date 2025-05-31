@@ -168,7 +168,7 @@ export const processWorldcoinValidation = async (
         validate_hash,
         validate_code,
     }: {
-        verifyRes: { success: boolean},
+        verifyRes: { success: boolean },
         proof: any,
         validate_hash: string,
         validate_code: string
@@ -176,8 +176,9 @@ export const processWorldcoinValidation = async (
 ) => {
     const entry = db.get(validate_hash);
     if (entry && entry.step === 'validating' && entry.code === validate_code && verifyRes.success) {
+        entry.step = 'answered';
         entry.verifyProof = proof;
-        const url = 'https://blockscoot.com/..'; // TODO
+        const url = `https://mini.app.mailproof.net/check/${validate_hash}`;
         await sendEmail(
             entry.to,
             entry.from,
@@ -186,8 +187,22 @@ export const processWorldcoinValidation = async (
             `Sender has validated email. See on-chain proof ${url}`,
             `Sender has validated email. See <a href="${url}">on-chain proof</a>`,
         );
-        return true;
+        return {success: true};
     } else {
-        return false;
+        return {success: false};
+    }
+};
+
+export const processValidationCheck = async ({validate_hash}: { validate_hash: string }) => {
+    const entry = db.get(validate_hash);
+    if (entry && entry.step === 'answered') {
+        return {
+            verified: true,
+            proof: entry.verifyProof,
+        };
+    } else {
+        return {
+            verified: false,
+        };
     }
 };
