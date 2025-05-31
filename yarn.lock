@@ -250,6 +250,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:6.4.17":
+  version: 6.4.17
+  resolution: "@types/nodemailer@npm:6.4.17"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/689abb3005cf36cf89c2abe56f0aa4469a37e0814633a73fbeb35732e856f4b0d7ab32b6d91585038b6941f5b70db58ec2bd147ebe9f73e528eb6c99604f4e82
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^3.0.0":
   version: 3.0.1
   resolution: "abbrev@npm:3.0.1"
@@ -765,8 +774,10 @@ __metadata:
   resolution: "mailproof-back@workspace:back"
   dependencies:
     "@types/imapflow": "npm:1.0.22"
+    "@types/nodemailer": "npm:6.4.17"
     esbuild: "npm:0.25.5"
     imapflow: "npm:1.0.187"
+    nodemailer: "npm:7.0.3"
     openai: "npm:5.0.1"
     resolvable-promise: "npm:3.1.0"
     tsx: "npm:4.19.4"

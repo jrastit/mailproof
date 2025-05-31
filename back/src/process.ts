@@ -1,5 +1,5 @@
-import {FetchMessageObject} from "imapflow";
-import {log} from "./log";
+import {FetchMessageObject} from 'imapflow';
+import {log} from './log';
 import {OpenAI} from 'openai';
 import {RunnableToolFunction} from 'openai/lib/RunnableFunction';
 import {ChatCompletionMessageParam} from 'openai/resources/chat';
@@ -11,15 +11,19 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const processMail = async (mail: FetchMessageObject) => {
+export const processMail = async (
+    mail: FetchMessageObject,
+    sendEmailBack: (sourceEmail: FetchMessageObject, text: string, html: string) => Promise<void>,
+) => {
     log('Received message', {
         envelope: mail.envelope,
     });
 
     const assistantPrompt = await fs.readFile(`prompt/prompt.txt`, 'utf-8');
 
-    const sendEmail = ({body}: { body: string }) => {
-        log('Answering', {body});
+    const sendEmail = async ({text, html}: { text: string, html: string }) => {
+        log('Answering', {text, html});
+        await sendEmailBack(mail, text, html);
         return 'OK';
     };
 
@@ -32,13 +36,14 @@ export const processMail = async (mail: FetchMessageObject) => {
                 parameters: {
                     type: 'object',
                     properties: {
-                        body: {type: 'string'},
+                        text: {type: 'string', description: 'Email body in raw text'},
+                        html: {type: 'string', description: 'Email body in HTML'},
                     },
                 },
                 function: sendEmail,
                 parse: JSON.parse,
             },
-        } as RunnableToolFunction<{ body: string }>,
+        } as RunnableToolFunction<{ text: string, html: string }>,
     ];
 
     const messages: ChatCompletionMessageParam[] = [

@@ -1,6 +1,17 @@
 import {FetchMessageObject, ImapFlow} from 'imapflow';
 import ResolvablePromise from 'resolvable-promise';
-import {log} from "./log";
+import {log} from './log';
+
+const client = new ImapFlow({
+    host: 'imap.ionos.fr',
+    port: 993,
+    secure: true,
+    auth: {
+        user: '*@mailproof.net',
+        pass: process.env.MAIL_PASSWORD
+    },
+    logger: false,
+});
 
 let running = true;
 
@@ -8,7 +19,7 @@ export const stopListening = () => {
     running = false;
 }
 
-export const listen = async (client: ImapFlow, mailboxName: string, process: (message: FetchMessageObject) => Promise<void>) => {
+export const listen = async (process: (message: FetchMessageObject) => Promise<void>) => {
     let existEventPromise = new ResolvablePromise();
     client.on('exists', (updateEvent) => {
         log('update event', {updateEvent});
@@ -20,7 +31,7 @@ export const listen = async (client: ImapFlow, mailboxName: string, process: (me
     await client.connect();
 
     log('Opening mailbox...');
-    const mailbox = await client.mailboxOpen(mailboxName);
+    const mailbox = await client.mailboxOpen('INBOX');
 
     log('Fetching messages...');
     while (running) {
