@@ -267,8 +267,10 @@ export const resumePending = async (email: string) => {
                     sender,
                     `Re: ${subject}`,
                     messageId,
-                    `Please validate using Worldcoin by going to ${url}`,
-                    `Please validate using <a href="${url}">Worldcoin</a>`,
+                    `Hi, To verify your identity, we invite you to use Worldcoin.
+Please validate by going to: ${url}`,
+                    `Please validate using <a href="${url}">Worldcoin</a> This step is necessary to ensure the security of your information.
+Thank you for your cooperation.`,
                 );
             }
         }
