@@ -22,7 +22,7 @@ type HashEntry = {
     messageId: string,
     verifyProof?: unknown,
     dkimValid: boolean,
-    attachment?: Buffer,
+    attachment?: string,
     answer?: {
         text: string,
         html: string,
@@ -154,7 +154,7 @@ export const processMail = async (mail: FetchMessageObject) => {
             hashDb.set(`hash:${attachmentHash}`, {
                 step: 'stacking',
                 code: 'none',
-                attachment,
+                attachment: attachment.toString(),
                 dkimValid,
                 ...mailMeta,
             });
@@ -242,14 +242,14 @@ export const resumePending = async (email: string) => {
                 );
             };
 
-            const data = await evaluateByChat(entry.attachment?.toString() ?? '');
+            const data = await evaluateByChat(entry.attachment ?? '');
             if (data.isSpam) {
                 log('Mail is a spam');
                 entry.step = 'answered';
                 entry.answer = data;
                 await sendEmailBack(data.text, data.html);
             } else {
-                const parsedAttachment = await simpleParser(entry.attachment?.toString() ?? '');
+                const parsedAttachment = await simpleParser(entry.attachment ?? '');
                 const sender = parsedAttachment.from?.value[0]?.address ?? '';
                 const messageId = parsedAttachment.messageId;
                 const subject = parsedAttachment.subject ?? '';
