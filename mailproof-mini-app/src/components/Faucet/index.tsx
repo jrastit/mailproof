@@ -1,6 +1,5 @@
 'use client';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
-import { MiniKit, Tokens, tokenToDecimals } from '@worldcoin/minikit-js';
 import { useState } from 'react';
 
 /**
@@ -40,7 +39,7 @@ export const Faucet = (props : {email_address : string}) => {
 
   return (
     <div className="grid w-full gap-4">
-      <p className="text-lg font-semibold">Pay</p>
+      <p className="text-lg font-semibold">Faucet</p>
       <LiveFeedback
         label={{
           failed: 'Payment failed',
@@ -57,23 +56,9 @@ export const Faucet = (props : {email_address : string}) => {
           variant="primary"
           className="w-full"
         >
-          Pay
+          Faucet
         </Button>
       </LiveFeedback>
-      {txId && (
-        <div className="text-sm text-gray-500">
-          Transaction ID: {txId}
-          &nbsp;|&nbsp;
-          <a
-            href={`https://worldchain-mainnet.explorer.alchemy.com/tx/${txId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline"
-          >
-            See on Explorer
-          </a>
-        </div>
-      )}
     </div>
   );
 };
