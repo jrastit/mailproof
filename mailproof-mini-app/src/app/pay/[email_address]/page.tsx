@@ -4,8 +4,6 @@ import { Faucet } from '@/components/Faucet';
 import { PageHeader } from '@/components/PageHeader';
 import { Page } from '@/components/PageLayout';
 import { Pay } from '@/components/Pay';
-import { UserInfo } from '@/components/UserInfo';
-import { Marble, TopBar } from '@worldcoin/mini-apps-ui-kit-react';
 
 type Props = {
   params: Promise<{ email_address: string}>;

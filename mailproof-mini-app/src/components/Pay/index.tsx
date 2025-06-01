@@ -15,6 +15,7 @@ export const Pay = (props : {email_address : string}) => {
     'pending' | 'success' | 'failed' | undefined
   >(undefined);
   const [txId, setTxId] = useState<string | undefined>(undefined);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
   const onClickPay = async () => {
     // Lets use Alex's username to pay!
@@ -65,12 +66,25 @@ export const Pay = (props : {email_address : string}) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({payload:{
+          tx_id: tx_id,
           email: email_address,
           amount: result.commandPayload?.tokens[0].token_amount,
         }}),
       });
-      
 
+      if (!res.ok) {
+        console.error('Failed to notify backend:', res.status, await res.text());
+        setButtonState('failed');
+        setTimeout(() => {
+          setButtonState(undefined);
+          setTxId(undefined);
+        }, 5000);
+        return;
+      }
+      console.log('Payment confirmed successfully:', res.status);
+      const { transaction_hash } = await res.json();
+      console.log('Transaction hash:', transaction_hash);
+      setTxHash(transaction_hash);
       setButtonState('success');
       // It's important to actually check the transaction result on-chain
       // You should confirm the reference id matches for security
@@ -106,12 +120,12 @@ export const Pay = (props : {email_address : string}) => {
           Pay
         </Button>
       </LiveFeedback>
-      {txId && (
+      {txHash && (
         <div className="text-sm text-gray-500">
-          Transaction ID: {txId}
+          Transaction Hash: {txHash}
           &nbsp;|&nbsp;
           <a
-            href={`https://worldchain-mainnet.explorer.alchemy.com/tx/${txId}`}
+            href={`https://worldchain-mainnet.explorer.alchemy.com/tx/${txHash}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 underline"
