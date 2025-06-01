@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import {log} from './log';
-import {paymentDb, processValidationCheck, processWorldcoinValidation} from './process';
+import {paymentDb, processValidationCheck, processWorldcoinValidation, resumePending} from './process';
 
 const port = 8080;
 const app = express();
@@ -27,19 +27,8 @@ app.post('/api/payment/stack', async (req, res) => {
     } else {
         paymentDb.set(key, {stacked: amount, spent: 0});
     }
+    resumePending(email);
     res.json({success: true});
-});
-
-app.post('/api/payment/spend', async (req, res) => {
-    const {email, amount} = req.body;
-    const key = `email:${email}`;
-    const entry = paymentDb.get(key);
-    if (entry && entry.stacked >= amount) {
-        entry.stacked -= amount;
-        res.json({success: true});
-    } else {
-        res.json({success: false});
-    }
 });
 
 app.get('/api/payment/balance', async (req, res) => {

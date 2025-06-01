@@ -22,6 +22,7 @@ type HashEntry = {
     messageId: string,
     verifyProof?: unknown,
     dkimValid: boolean,
+    attachment?: Buffer,
     answer?: {
         text: string,
         html: string,
@@ -153,6 +154,7 @@ export const processMail = async (mail: FetchMessageObject) => {
             hashDb.set(`hash:${attachmentHash}`, {
                 step: 'stacking',
                 code: 'none',
+                attachment,
                 dkimValid,
                 ...mailMeta,
             });
@@ -207,6 +209,70 @@ export const processMail = async (mail: FetchMessageObject) => {
             );
         }
     }
+};
+
+export const resumePending = async (email: string) => {
+    hashDb.forEach(async (entry, attachmentHash) => {
+        if (entry.from === email && entry.step === 'stacking') {
+            const paymentKey = `email:${entry.from}`;
+            const paymentEntry = paymentDb.get(paymentKey);
+            if (!paymentEntry || paymentEntry.stacked - paymentEntry.spent < 0.1) {
+                const path = `/pay/${entry.from}`;
+                const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+                await sendEmail(
+                    'payment@mailproof.net',
+                    entry.from,
+                    `Re: ${entry.subject}`,
+                    entry.messageId,
+                    `Insufficient funds, please stack using Worldcoin by going to ${url}`,
+                    `Insufficient funds, please stack using <a href="${url}">Worldcoin</a>`,
+                );
+                return;
+            }
+            paymentEntry.spent -= 0.01;
+
+            const sendEmailBack = async (text: string, html: string) => {
+                await sendEmail(
+                    entry.to,
+                    entry.from,
+                    `Re: ${entry.subject}`,
+                    entry.messageId,
+                    text,
+                    html,
+                );
+            };
+
+            const data = await evaluateByChat(entry.attachment?.toString() ?? '');
+            if (data.isSpam) {
+                log('Mail is a spam');
+                entry.step = 'answered';
+                entry.answer = data;
+                await sendEmailBack(data.text, data.html);
+            } else {
+                const parsedAttachment = await simpleParser(entry.attachment?.toString() ?? '');
+                const sender = parsedAttachment.from?.value[0]?.address ?? '';
+                const messageId = parsedAttachment.messageId;
+                const subject = parsedAttachment.subject ?? '';
+                log('Mail is not a spam, asking confirmation to original sender', {sender, messageId});
+
+                // need to send email to alice
+                const code = uuid();
+                entry.step = 'validating';
+                entry.code = code;
+
+                const path = `/validate/${attachmentHash}/${code}`;
+                const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+                await sendEmail(
+                    'validation@mailproof.net',
+                    sender,
+                    `Re: ${subject}`,
+                    messageId,
+                    `Please validate using Worldcoin by going to ${url}`,
+                    `Please validate using <a href="${url}">Worldcoin</a>`,
+                );
+            }
+        }
+    });
 };
 
 export const processWorldcoinValidation = async (
