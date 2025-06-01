@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { Balance } from '@/components/Balance';
 import { Faucet } from '@/components/Faucet';
 import { Page } from '@/components/PageLayout';
 import { Pay } from '@/components/Pay';
@@ -34,6 +35,7 @@ export default async function PayPage(props: Props) {
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         
         <UserInfo />
+        <Balance email_address={email_address_decoded} />
         <Faucet email_address={email_address_decoded} />
         <Pay  email_address={email_address_decoded}/>
       </Page.Main>
