@@ -33,7 +33,7 @@ app.post('/api/payment/stack', async (req, res) => {
 });
 
 app.get('/api/payment/balance', async (req, res) => {
-    const {email} = req.params as any;
+    const {email} = req.query as any;
     const key = `email:${email}`;
     const entry = paymentDb.get(key);
     res.json({stacked: entry?.stacked ?? 0, spent: entry?.spent ?? 0});
