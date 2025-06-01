@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { Faucet } from '@/components/Faucet';
 import { Page } from '@/components/PageLayout';
 import { Pay } from '@/components/Pay';
 import { UserInfo } from '@/components/UserInfo';
@@ -10,6 +11,9 @@ type Props = {
 
 export default async function PayPage(props: Props) {
   const { email_address } = await props.params;
+  console.log('Email address encoded:', email_address);
+  const email_address_decoded = decodeURIComponent(email_address);
+  console.log('Email address decoded:', email_address_decoded);
   const session = await auth();
   
   return (
@@ -30,7 +34,8 @@ export default async function PayPage(props: Props) {
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         
         <UserInfo />
-        <Pay  email_address={email_address}/>
+        <Faucet email_address={email_address_decoded} />
+        <Pay  email_address={email_address_decoded}/>
       </Page.Main>
     </>
   );

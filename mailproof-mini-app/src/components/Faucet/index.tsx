@@ -8,7 +8,7 @@ import { useState } from 'react';
  * The payment command simply does an ERC20 transfer
  * But, it also includes a reference field that you can search for on-chain
  */
-export const Pay = (props : {email_address : string}) => {
+export const Faucet = (props : {email_address : string}) => {
   console.log('Pay component props:', props);
   const { email_address } = props;
   const [buttonState, setButtonState] = useState<
@@ -18,47 +18,7 @@ export const Pay = (props : {email_address : string}) => {
 
   const onClickPay = async () => {
     // Lets use Alex's username to pay!
-    const address = (await MiniKit.getUserByUsername('jrastit')).walletAddress;
-    setButtonState('pending');
-
-    const res = await fetch('/api/initiate-payment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email_address
-      }),
-    });
-    const { id } = await res.json();
-
-    console.log('Payment reference ID:', id);
-    console.log('Payment address:', address);
-
-    const result = await MiniKit.commandsAsync.pay({
-      reference: id,
-      // to: address ?? '0xaa875023f631d4686a23312b7b711a04d17e7ffa',
-      to: '0xB724531aD056340bbf611Ac2E68502B26D394179',
-      tokens: [
-        {
-          symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(0.1, Tokens.WLD).toString(),
-        },
-        // {
-        //   symbol: Tokens.USDCE,
-        //   token_amount: tokenToDecimals(0.1, Tokens.USDCE).toString(),
-        // },
-      ],
-      description: 'Test example payment for minikit',
-    });
-
-    console.log(result.finalPayload);
-
-    const tx_id = result.commandPayload?.reference;
-    setTxId(tx_id);
-
-    if (result.finalPayload.status === 'success') {
-
+    
       const res = await fetch('/api/confirm-payment', {
         method: 'POST',
         headers: {
@@ -66,7 +26,7 @@ export const Pay = (props : {email_address : string}) => {
         },
         body: JSON.stringify({payload:{
           email: email_address,
-          amount: result.commandPayload?.tokens[0].token_amount,
+          amount: '1000000000000000000', // 0.1 WLD in wei
         }}),
       });
       
@@ -75,13 +35,7 @@ export const Pay = (props : {email_address : string}) => {
       // It's important to actually check the transaction result on-chain
       // You should confirm the reference id matches for security
       // Read more here: https://docs.world.org/mini-apps/commands/pay#verifying-the-payment
-    } else {
-      setButtonState('failed');
-      setTimeout(() => {
-        setButtonState(undefined);
-        setTxId(undefined);
-      }, 3000);
-    }
+    
   };
 
   return (
