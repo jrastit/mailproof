@@ -20,12 +20,13 @@ app.get('/api/check', async (req, res) => {
 
 app.post('/api/payment/stack', async (req, res) => {
     const {email, amount} = req.body;
+    const realAmount = Number.parseInt(amount.substring(0, amount.length - 16)) / 100;
     const key = `email:${email}`;
     const entry = paymentDb.get(key);
     if (entry) {
-        entry.stacked += amount;
+        entry.stacked += realAmount;
     } else {
-        paymentDb.set(key, {stacked: amount, spent: 0});
+        paymentDb.set(key, {stacked: realAmount, spent: 0});
     }
     resumePending(email);
     res.json({success: true});
