@@ -8,10 +8,12 @@ import { useState } from 'react';
  * The payment command simply does an ERC20 transfer
  * But, it also includes a reference field that you can search for on-chain
  */
-export const Pay = () => {
+export const Pay = (props : {email_address : string}) => {
+  const { email_address } = props;
   const [buttonState, setButtonState] = useState<
     'pending' | 'success' | 'failed' | undefined
   >(undefined);
+  const [txId, setTxId] = useState<string | undefined>(undefined);
 
   const onClickPay = async () => {
     // Lets use Alex's username to pay!
@@ -20,6 +22,12 @@ export const Pay = () => {
 
     const res = await fetch('/api/initiate-payment', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email_address
+      }),
     });
     const { id } = await res.json();
 
@@ -44,7 +52,23 @@ export const Pay = () => {
     });
 
     console.log(result.finalPayload);
+
+    const tx_id = result.commandPayload?.reference;
+    setTxId(tx_id);
+
     if (result.finalPayload.status === 'success') {
+
+      const res = await fetch('/api/confirm-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payload: result.finalPayload,
+        }),
+      });
+      
+
       setButtonState('success');
       // It's important to actually check the transaction result on-chain
       // You should confirm the reference id matches for security
@@ -53,6 +77,7 @@ export const Pay = () => {
       setButtonState('failed');
       setTimeout(() => {
         setButtonState(undefined);
+        setTxId(undefined);
       }, 3000);
     }
   };
@@ -79,6 +104,20 @@ export const Pay = () => {
           Pay
         </Button>
       </LiveFeedback>
+      {txId && (
+        <div className="text-sm text-gray-500">
+          Transaction ID: {txId}
+          &nbsp;|&nbsp;
+          <a
+            href={`https://worldchain-mainnet.explorer.alchemy.com/tx/${txId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline"
+          >
+            See on Explorer
+          </a>
+        </div>
+      )}
     </div>
   );
 };

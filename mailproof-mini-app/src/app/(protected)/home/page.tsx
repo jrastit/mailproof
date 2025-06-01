@@ -28,8 +28,8 @@ export default async function Home() {
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <UserInfo />
         <Verify />
-        <Pay />
-        {/* <Transaction />
+        
+        {/* <Pay /><Transaction />
         <ViewPermissions /> */}
       </Page.Main>
     </>
