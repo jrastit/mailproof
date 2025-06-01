@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { PageHeader } from '@/components/PageHeader';
 import { Page } from '@/components/PageLayout';
 import { UserInfo } from '@/components/UserInfo';
 import { Verify } from '@/components/Verify';
@@ -9,19 +10,7 @@ export default async function Home() {
 
   return (
     <>
-      <Page.Header className="p-0">
-        <TopBar
-          title="Home"
-          endAdornment={
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold capitalize">
-                {session?.user.username}
-              </p>
-              <Marble src={session?.user.profilePictureUrl} className="w-12" />
-            </div>
-          }
-        />
-      </Page.Header>
+      <PageHeader title="Main" />
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <UserInfo />
         <Verify />

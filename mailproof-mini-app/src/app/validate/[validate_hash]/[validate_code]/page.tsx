@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { PageHeader } from '@/components/PageHeader';
 import { Page } from '@/components/PageLayout';
 import { UserInfo } from '@/components/UserInfo';
 import { Validate } from '@/components/Validate';
@@ -14,6 +15,7 @@ export default async function ValidatePage(props: Props) {
   
   return (
     <>
+      <PageHeader title="Validate mail" />
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <Validate validate_hash={validate_hash}  validate_code={validate_code}  />
       </Page.Main>
