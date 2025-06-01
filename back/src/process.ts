@@ -158,7 +158,7 @@ export const processMail = async (mail: FetchMessageObject) => {
                 dkimValid,
                 ...mailMeta,
             });
-            const path = `/pay/${mailMeta.from}`;
+            const path = `/pay/${encodeURIComponent(mailMeta.from)}`;
             const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
             await sendEmail(
                 'payment@mailproof.net',
@@ -217,7 +217,7 @@ export const resumePending = async (email: string) => {
             const paymentKey = `email:${entry.from}`;
             const paymentEntry = paymentDb.get(paymentKey);
             if (!paymentEntry || paymentEntry.stacked - paymentEntry.spent < 0.1) {
-                const path = `/pay/${entry.from}`;
+                const path = `/pay/${encodeURIComponent(entry.from)}`;
                 const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
                 await sendEmail(
                     'payment@mailproof.net',
