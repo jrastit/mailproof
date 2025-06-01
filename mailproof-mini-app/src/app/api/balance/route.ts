@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MiniAppPaymentSuccessPayload } from '@worldcoin/minikit-js'
 
-interface IRequestPayload {
-	payload: MiniAppPaymentSuccessPayload
-}
 
 export async function POST(req: NextRequest) {
   const payload = (await req.json()) as { email: string }

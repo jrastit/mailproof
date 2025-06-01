@@ -1,5 +1,6 @@
 'use client';
-import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
+import { LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
+import { Button } from '@worldcoin/mini-apps-ui-kit-react';
 import { useState } from 'react';
 
 /**
@@ -41,23 +42,23 @@ export const Faucet = (props : {email_address : string}) => {
     <div className="grid w-full gap-4">
       <p className="text-lg font-semibold">Faucet</p>
       <LiveFeedback
-        label={{
-          failed: 'Payment failed',
-          pending: 'Payment pending',
-          success: 'Payment successful',
-        }}
-        state={buttonState}
+      label={{
+        failed: 'Payment failed',
+        pending: 'Payment pending',
+        success: 'Payment successful',
+      }}
+      state={buttonState}
+      className="w-full"
+      >
+      <Button
+        onClick={onClickPay}
+        disabled={buttonState === 'pending'}
+        size="lg"
+        variant="primary"
         className="w-full"
       >
-        <Button
-          onClick={onClickPay}
-          disabled={buttonState === 'pending'}
-          size="lg"
-          variant="primary"
-          className="w-full"
-        >
-          Faucet
-        </Button>
+        Faucet
+      </Button>
       </LiveFeedback>
     </div>
   );
