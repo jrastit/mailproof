@@ -170,7 +170,7 @@ export const processMail = async (mail: FetchMessageObject) => {
             );
             return;
         }
-        paymentEntry.spent -= 0.01;
+        paymentEntry.spent += 0.01;
 
         const data = await evaluateByChat(attachment.toString());
         if (data.isSpam) {
@@ -229,7 +229,7 @@ export const resumePending = async (email: string) => {
                 );
                 return;
             }
-            paymentEntry.spent -= 0.01;
+            paymentEntry.spent += 0.01;
 
             const sendEmailBack = async (text: string, html: string) => {
                 await sendEmail(
