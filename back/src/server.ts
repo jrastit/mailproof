@@ -1,8 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import {log} from './log';
-import {processValidationCheck, processWorldcoinValidation} from './process';
-import {getDB} from "./db";
+import {paymentDb, processValidationCheck, processWorldcoinValidation} from './process';
 
 const port = 8080;
 const app = express();
@@ -19,22 +18,14 @@ app.get('/api/check', async (req, res) => {
     res.json(result);
 });
 
-
-type EmailEntry = {
-    stacked: number,
-    spent: number,
-};
-
-const db = getDB<EmailEntry>();
-
 app.post('/api/payment/stack', async (req, res) => {
     const {email, amount} = req.body;
     const key = `email:${email}`;
-    const entry = db.get(key);
+    const entry = paymentDb.get(key);
     if (entry) {
         entry.stacked += amount;
     } else {
-        db.set(key, {stacked: amount, spent: 0});
+        paymentDb.set(key, {stacked: amount, spent: 0});
     }
     res.json({success: true});
 });
@@ -42,7 +33,7 @@ app.post('/api/payment/stack', async (req, res) => {
 app.post('/api/payment/spend', async (req, res) => {
     const {email, amount} = req.body;
     const key = `email:${email}`;
-    const entry = db.get(key);
+    const entry = paymentDb.get(key);
     if (entry && entry.stacked >= amount) {
         entry.stacked -= amount;
         res.json({success: true});
@@ -54,7 +45,7 @@ app.post('/api/payment/spend', async (req, res) => {
 app.get('/api/payment/balance', async (req, res) => {
     const {email} = req.params as any;
     const key = `email:${email}`;
-    const entry = db.get(key);
+    const entry = paymentDb.get(key);
     res.json({stacked: entry?.stacked ?? 0, spent: entry?.spent ?? 0});
 });
 

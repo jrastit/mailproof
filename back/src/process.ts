@@ -14,7 +14,7 @@ import {promisify} from 'node:util';
 
 
 type HashEntry = {
-    step: 'answered' | 'validating',
+    step: 'answered' | 'validating' | 'stacking',
     code: string,
     from: string,
     to: string,
@@ -29,7 +29,13 @@ type HashEntry = {
     },
 };
 
+type EmailEntry = {
+    stacked: number,
+    spent: number,
+};
+
 const hashDb = getDB<HashEntry>();
+export const paymentDb = getDB<EmailEntry>();
 
 const verifyDKIM = promisify(verify);
 
@@ -130,7 +136,7 @@ export const processMail = async (mail: FetchMessageObject) => {
     }
 
     const attachmentHash = `0x${hashContent(attachment)}`;
-//    const dkimResults = await verifiyDKIM(attachment);
+//    const dkimResults = await verifyDKIM(attachment);
 //    log('DKIM', {dkimResults});
     const dkimValid = false;
     const parsedAttachment = await simpleParser(attachment);
@@ -141,6 +147,29 @@ export const processMail = async (mail: FetchMessageObject) => {
         log('Answer already exists');
         await sendEmailBack(entry.answer?.text ?? '', entry.answer?.html ?? '');
     } else {
+        const paymentKey = `email:${mailMeta.from}`;
+        const paymentEntry = paymentDb.get(paymentKey);
+        if (!paymentEntry || paymentEntry.stacked - paymentEntry.spent < 0.1) {
+            hashDb.set(`hash:${attachmentHash}`, {
+                step: 'stacking',
+                code: 'none',
+                dkimValid,
+                ...mailMeta,
+            });
+            const path = `/pay/${mailMeta.from}`;
+            const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+            await sendEmail(
+                'payment@mailproof.net',
+                mailMeta.from,
+                `Re: ${mailMeta.subject}`,
+                mailMeta.messageId,
+                `Insufficient funds, please stack using Worldcoin by going to ${url}`,
+                `Insufficient funds, please stack using <a href="${url}">Worldcoin</a>`,
+            );
+            return;
+        }
+        paymentEntry.spent -= 0.01;
+
         const data = await evaluateByChat(attachment.toString());
         if (data.isSpam) {
             log('Mail is a spam');
