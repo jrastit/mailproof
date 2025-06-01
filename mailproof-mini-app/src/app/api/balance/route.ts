@@ -6,10 +6,11 @@ interface IRequestPayload {
 }
 
 export async function POST(req: NextRequest) {
-  console.log('POST /api/balance called')
-  
+  const payload = (await req.json()) as { email: string }
+  console.log('POST /api/confirm-payment called with payload:', payload)
   // Extract the payload from the request body
-	const { email } = (await req.json()) as { email: string }
+	const { email } = payload; 
+  console.log('POST /api/confirm-payment called with email:', email)
   
 
     const response = await fetch(

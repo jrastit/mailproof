@@ -25,7 +25,7 @@ export const Faucet = (props : {email_address : string}) => {
         },
         body: JSON.stringify({payload:{
           email: email_address,
-          amount: '1000000000000000000', // 0.1 WLD in wei
+          amount: '100000000000000000', // 0.1 WLD in wei
         }}),
       });
       

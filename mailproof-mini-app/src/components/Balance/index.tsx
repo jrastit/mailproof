@@ -16,17 +16,20 @@ export const Balance = (props : {email_address : string}) => {
 
   const [balance, setBalance] = useState<{stacked:number, spent:number} | null>(null);
 
+  
+
   // Fetch balance every second
   useEffect(() => {
     let isMounted = true;
     const fetchBalance = async () => {
+      console.log('Balance component email_address:', email_address);
       try {
         const res = await fetch('/api/balance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ payload: { email: email_address } }),
+          body: JSON.stringify({ email: email_address }),
         });
         const data = await res.json();
         if (isMounted) setBalance(data.balance);
