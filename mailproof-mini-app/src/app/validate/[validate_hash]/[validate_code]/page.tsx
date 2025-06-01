@@ -15,7 +15,6 @@ export default async function ValidatePage(props: Props) {
   
   return (
     <>
-<<<<<<< HEAD
       <Page.Header className="p-0">
         <TopBar
           title="Validate"
@@ -29,9 +28,9 @@ export default async function ValidatePage(props: Props) {
           }
         />
       </Page.Header>
-      {/* Ajout du logo centré */}
+      {/* Logo centré en haut */}
       <div className="flex justify-center my-6">
-        <img src="wwww/images/Logo_BL_MailProof.png" alt="Logo" className="h-16" />
+        <img src="/images/Logo_BL_MailProof.png" alt="Logo" className="h-16" />
       </div>
       <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
         <p className="text-gray-500 text-sm">Validate hash: {validate_hash}</p>
@@ -42,11 +41,7 @@ export default async function ValidatePage(props: Props) {
             This step allows you, as the original sender, to confirm your identity via World ID. Once validated, your message is certified as coming from a verified human — reducing the risk of spoofing and building confidence with your recipient.
           </p>
         </div>
-=======
-      <PageHeader title="Validate mail" />
-      <Page.Main className="flex flex-col items-center justify-start gap-4 mb-16">
->>>>>>> cf84f0fde6d8f97e9c6edcc4552f1171af8be917
-        <Validate validate_hash={validate_hash}  validate_code={validate_code}  />
+        <Validate validate_hash={validate_hash} validate_code={validate_code} />
       </Page.Main>
     </>
   );
