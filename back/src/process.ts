@@ -1,5 +1,5 @@
 import {FetchMessageObject} from 'imapflow';
-import {db, DbEntry} from './db';
+import {getDB} from './db';
 import {log} from './log';
 import {simpleParser} from 'mailparser';
 import {OpenAI} from 'openai';
@@ -12,7 +12,33 @@ import {v4 as uuid} from 'uuid';
 import {verify} from 'dkim';
 import {promisify} from 'node:util';
 
-const verifiyDKIM = promisify(verify);
+
+type HashEntry = {
+    step: 'answered' | 'validating' | 'stacking',
+    code: string,
+    from: string,
+    to: string,
+    subject: string,
+    messageId: string,
+    verifyProof?: unknown,
+    dkimValid: boolean,
+    attachment?: string,
+    answer?: {
+        text: string,
+        html: string,
+        isSpam: boolean,
+    },
+};
+
+type EmailEntry = {
+    stacked: number,
+    spent: number,
+};
+
+const hashDb = getDB<HashEntry>();
+export const paymentDb = getDB<EmailEntry>();
+
+const verifyDKIM = promisify(verify);
 
 const model = 'gpt-4.1-mini';
 
@@ -111,21 +137,45 @@ export const processMail = async (mail: FetchMessageObject) => {
     }
 
     const attachmentHash = `0x${hashContent(attachment)}`;
-//    const dkimResults = await verifiyDKIM(attachment);
+//    const dkimResults = await verifyDKIM(attachment);
 //    log('DKIM', {dkimResults});
     const dkimValid = false;
     const parsedAttachment = await simpleParser(attachment);
     log('Attachment', {size: attachment.length, attachmentHash});
 
-    if (db.has(attachmentHash)) {
+    const entry = hashDb.get(`hash:${attachmentHash}`);
+    if (entry) {
         log('Answer already exists');
-        const dbData = db.get(attachmentHash) as DbEntry;
-        await sendEmailBack(dbData.answer?.text ?? '', dbData.answer?.html ?? '');
+        await sendEmailBack(entry.answer?.text ?? '', entry.answer?.html ?? '');
     } else {
+        const paymentKey = `email:${mailMeta.from}`;
+        const paymentEntry = paymentDb.get(paymentKey);
+        if (!paymentEntry || paymentEntry.stacked - paymentEntry.spent < 0.1) {
+            hashDb.set(`hash:${attachmentHash}`, {
+                step: 'stacking',
+                code: 'none',
+                attachment: attachment.toString(),
+                dkimValid,
+                ...mailMeta,
+            });
+            const path = `/pay/${encodeURIComponent(mailMeta.from)}`;
+            const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+            await sendEmail(
+                'payment@mailproof.net',
+                mailMeta.from,
+                `Re: ${mailMeta.subject}`,
+                mailMeta.messageId,
+                `Insufficient funds, please stack using Worldcoin by going to ${url}`,
+                `Insufficient funds, please stack using <a href="${url}">Worldcoin</a>`,
+            );
+            return;
+        }
+        paymentEntry.spent += 0.01;
+
         const data = await evaluateByChat(attachment.toString());
         if (data.isSpam) {
             log('Mail is a spam');
-            db.set(attachmentHash, {
+            hashDb.set(`hash:${attachmentHash}`, {
                 step: 'answered',
                 code: 'none',
                 dkimValid,
@@ -141,7 +191,7 @@ export const processMail = async (mail: FetchMessageObject) => {
 
             // need to send email to alice
             const code = uuid();
-            db.set(attachmentHash, {
+            hashDb.set(`hash:${attachmentHash}`, {
                 step: 'validating',
                 code,
                 dkimValid,
@@ -161,6 +211,70 @@ export const processMail = async (mail: FetchMessageObject) => {
     }
 };
 
+export const resumePending = async (email: string) => {
+    hashDb.forEach(async (entry, attachmentHash) => {
+        if (entry.from === email && entry.step === 'stacking') {
+            const paymentKey = `email:${entry.from}`;
+            const paymentEntry = paymentDb.get(paymentKey);
+            if (!paymentEntry || paymentEntry.stacked - paymentEntry.spent < 0.1) {
+                const path = `/pay/${encodeURIComponent(entry.from)}`;
+                const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+                await sendEmail(
+                    'payment@mailproof.net',
+                    entry.from,
+                    `Re: ${entry.subject}`,
+                    entry.messageId,
+                    `Insufficient funds, please stack using Worldcoin by going to ${url}`,
+                    `Insufficient funds, please stack using <a href="${url}">Worldcoin</a>`,
+                );
+                return;
+            }
+            paymentEntry.spent += 0.01;
+
+            const sendEmailBack = async (text: string, html: string) => {
+                await sendEmail(
+                    entry.to,
+                    entry.from,
+                    `Re: ${entry.subject}`,
+                    entry.messageId,
+                    text,
+                    html,
+                );
+            };
+
+            const data = await evaluateByChat(entry.attachment ?? '');
+            if (data.isSpam) {
+                log('Mail is a spam');
+                entry.step = 'answered';
+                entry.answer = data;
+                await sendEmailBack(data.text, data.html);
+            } else {
+                const parsedAttachment = await simpleParser(entry.attachment ?? '');
+                const sender = parsedAttachment.from?.value[0]?.address ?? '';
+                const messageId = parsedAttachment.messageId;
+                const subject = parsedAttachment.subject ?? '';
+                log('Mail is not a spam, asking confirmation to original sender', {sender, messageId});
+
+                // need to send email to alice
+                const code = uuid();
+                entry.step = 'validating';
+                entry.code = code;
+
+                const path = `/validate/${attachmentHash}/${code}`;
+                const url = `https://worldcoin.org/mini-app?app_id=app_d574953a1565443400d391a6822124e7&path=${path}`;
+                await sendEmail(
+                    'validation@mailproof.net',
+                    sender,
+                    `Re: ${subject}`,
+                    messageId,
+                    `Please validate using Worldcoin by going to ${url}`,
+                    `Please validate using <a href="${url}">Worldcoin</a>`,
+                );
+            }
+        }
+    });
+};
+
 export const processWorldcoinValidation = async (
     {
         verifyRes,
@@ -168,16 +282,17 @@ export const processWorldcoinValidation = async (
         validate_hash,
         validate_code,
     }: {
-        verifyRes: { success: boolean},
+        verifyRes: { success: boolean },
         proof: any,
         validate_hash: string,
         validate_code: string
     }
 ) => {
-    const entry = db.get(validate_hash);
+    const entry = hashDb.get(`hash:${validate_hash}`);
     if (entry && entry.step === 'validating' && entry.code === validate_code && verifyRes.success) {
+        entry.step = 'answered';
         entry.verifyProof = proof;
-        const url = 'https://blockscoot.com/..'; // TODO
+        const url = `https://mini.app.mailproof.net/check/${validate_hash}`;
         await sendEmail(
             entry.to,
             entry.from,
@@ -186,8 +301,22 @@ export const processWorldcoinValidation = async (
             `Sender has validated email. See on-chain proof ${url}`,
             `Sender has validated email. See <a href="${url}">on-chain proof</a>`,
         );
-        return true;
+        return {success: true};
     } else {
-        return false;
+        return {success: false};
+    }
+};
+
+export const processValidationCheck = async ({validate_hash}: { validate_hash: string }) => {
+    const entry = hashDb.get(`hash:${validate_hash}`);
+    if (entry && entry.step === 'answered') {
+        return {
+            verified: true,
+            proof: entry.verifyProof,
+        };
+    } else {
+        return {
+            verified: false,
+        };
     }
 };

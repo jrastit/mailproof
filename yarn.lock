@@ -1356,6 +1356,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"mailproof@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "mailproof@workspace:."
+  languageName: unknown
+  linkType: soft
+
 "mailsplit@npm:5.4.3":
   version: 5.4.3
   resolution: "mailsplit@npm:5.4.3"
@@ -2109,12 +2115,6 @@ __metadata:
   checksum: 10c0/d4679609bb2a9b48eeaf84632b6d844128d2412b95b6de07d53d8ee8baf4ca0857c9331dfa510390a0727b550fd543d4d1a10995ad86cdf078423fbb8d99831d
   languageName: node
   linkType: hard
-
-"test@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "test@workspace:."
-  languageName: unknown
-  linkType: soft
 
 "thread-stream@npm:^3.0.0":
   version: 3.1.0

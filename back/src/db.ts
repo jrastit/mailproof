@@ -1,22 +1,9 @@
 import * as fs from 'node:fs/promises';
 
-export type DbEntry = {
-    step: 'answered' | 'validating',
-    code: string,
-    from: string,
-    to: string,
-    subject: string,
-    messageId: string,
-    verifyProof?: unknown,
-    dkimValid: boolean,
-    answer?: {
-        text: string,
-        html: string,
-        isSpam: boolean,
-    },
-};
+const db = new Map<string, any>();
 
-export const db = new Map<string, DbEntry>();
+export const getDB = <T>(): Map<string, T> => db as unknown as Map<string, T>;
+
 const dbFileName = 'db.json';
 const dbTmpFileName = 'db.tmp.json';
 
@@ -39,7 +26,7 @@ const readDb = async () => {
     }
 
     if (await exists(dbFileName)) {
-        const newDb: Record<string, DbEntry> = JSON.parse(await fs.readFile(dbFileName, 'utf8'));
+        const newDb: Record<string, any> = JSON.parse(await fs.readFile(dbFileName, 'utf8'));
         db.clear();
         Object.entries(newDb).forEach(([key, value]) => {
             db.set(key, value);
